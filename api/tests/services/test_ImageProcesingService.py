@@ -7,6 +7,9 @@ from django.http import QueryDict
 from api.image_processing import ImageProfileAbstract, ImageProfileForm, QueryError
 from api.services import ImageProcessingService
 
+# Stubs
+########################################################################################
+
 
 class ImageProfileStub(ImageProfileAbstract):
     pass
@@ -17,6 +20,10 @@ class ImageProfileFormStub(ImageProfileForm):
 
     def get_profile(self) -> ImageProfileAbstract:
         return ImageProfileFormStub()
+
+
+# Tests
+########################################################################################
 
 
 def test_create_file_query_valid():
