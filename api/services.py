@@ -20,6 +20,9 @@ class ImageProcessingServiceAbstract(ABC):
 
 class ImageProcessingService(ImageProcessingServiceAbstract):
     def route_querydict(self, querydict: QueryDict) -> ImageProfileForm:
+        """
+        引数querydictを解析できない場合、QueryError例外が発生する
+        """
         raise NotImplementedError()
 
     def create_profile(self, querydict: QueryDict) -> ImageProfileAbstract:
