@@ -13,4 +13,5 @@ class ImageProfileAbstract:
 
 
 class ImageProfileForm(forms.Form):
-    pass
+    def get_profile(self) -> ImageProfileAbstract:
+        raise NotImplementedError()
