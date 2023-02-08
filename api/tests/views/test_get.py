@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 from unittest.mock import patch
 
 import pytest
 from django.http import QueryDict
 from django.urls import reverse
+from PIL.Image import Image
 
 from api import container as api_container
 from api import views
@@ -19,22 +19,35 @@ from api.services import ImageModelServiceAbstract, ImageProcessingServiceAbstra
 
 
 class ImageProfileStub(ImageProfileAbstract):
-    pass
+    def create_pil_image(self) -> Image:
+        raise NotImplementedError()
+
+    @property
+    def quality(self) -> int | None:
+        raise NotImplementedError()
+
+    @quality.setter
+    def quality(self, value: int):
+        raise NotImplementedError()
+
+    @classmethod
+    def get_extension(cls) -> str:
+        raise NotImplementedError()
 
 
 class ImageProcessingServiceStub(ImageProcessingServiceAbstract):
     def create_profile(self, querydict: QueryDict) -> ImageProfileAbstract:
         return ImageProfileStub()
 
-    def create_image(self, profile: ImageProfileAbstract) -> Path:
-        return Path("/path/to/image.jpeg")
+    def create_image(self, profile: ImageProfileAbstract, base_dir: str) -> str:
+        return "/path/to/image.jpeg"
 
 
 class ImageModelServiceStub(ImageModelServiceAbstract):
     def get_cache_image_url(self, profile: ImageProfileAbstract) -> str | None:
         return "http://example.com/cache.jpeg"
 
-    def upload_image(self, image_path: Path) -> str:
+    def upload_image(self, image_path: str) -> str:
         return "http://example.com/uploaded.jpeg"
 
 
@@ -86,7 +99,7 @@ def test_cache_None(rf, view_url: str, container: Container):
 def test_create_profile_QueryError(rf, view_url: str, container: Container):
     image_processing = ImageProcessingServiceStub()
     image_model = ImageModelServiceStub()
-    error_messages = {"field_1": "error_message_1", "field_2": "error_message_2"}
+    error_messages = {"field_1": ["error_message_1"], "field_2": ["error_message_2"]}
     query_error = QueryError(error_messages)
 
     with patch.object(image_processing, "create_profile", side_effect=query_error):
