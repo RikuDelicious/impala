@@ -5,10 +5,17 @@ from abc import ABC, abstractmethod
 from django import forms
 from PIL.Image import Image
 
+# Exceptions
+########################################################################################
+
 
 class QueryError(Exception):
     def __init__(self, messages: dict[str, str | list[str]]):
         self.messages = messages
+
+
+# Image Profiles
+########################################################################################
 
 
 class ImageProfileAbstract(ABC):
@@ -30,6 +37,10 @@ class ImageProfileAbstract(ABC):
     @abstractmethod
     def get_extension(cls) -> str:
         raise NotImplementedError()
+
+
+# Image Profile Forms
+########################################################################################
 
 
 class ImageProfileForm(forms.Form):
