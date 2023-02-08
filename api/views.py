@@ -1,4 +1,5 @@
 import json
+from tempfile import TemporaryDirectory
 
 from dependency_injector.wiring import Provide, inject
 from django.http import HttpRequest, HttpResponseBadRequest
@@ -32,6 +33,7 @@ def get(
     if cache_url is not None:
         return redirect(cache_url)
     else:
-        image_path = image_processing.create_image(profile)
-        image_url = image_model.upload_image(image_path)
+        with TemporaryDirectory() as temp_dir_name:
+            image_path = image_processing.create_image(profile, temp_dir_name)
+            image_url = image_model.upload_image(image_path)
         return redirect(image_url)
