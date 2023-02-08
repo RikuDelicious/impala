@@ -27,10 +27,6 @@ class ImageProfileStub(ImageProfileAbstract):
     def quality(self) -> int | None:
         return self._quality
 
-    @quality.setter
-    def quality(self, value: int):
-        raise NotImplementedError()
-
     @classmethod
     def get_extension(cls) -> str:
         return "jpeg"
