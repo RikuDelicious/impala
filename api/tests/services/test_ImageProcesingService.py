@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+import os
+from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
+import PIL.Image
 import pytest
 from django import forms
 from django.http import QueryDict
-from PIL.Image import Image
 
 from api.image_processing import ImageProfileAbstract, ImageProfileForm, QueryError
 from api.services import ImageProcessingService
@@ -15,12 +17,15 @@ from api.services import ImageProcessingService
 
 
 class ImageProfileStub(ImageProfileAbstract):
-    def create_pil_image(self) -> Image:
-        raise NotImplementedError()
+    def __init__(self, quality: int | None):
+        self._quality = quality
+
+    def create_pil_image(self) -> PIL.Image.Image:
+        return PIL.Image.new(mode="RGB", size=(512, 512), color=(100, 100, 100))
 
     @property
     def quality(self) -> int | None:
-        raise NotImplementedError()
+        return self._quality
 
     @quality.setter
     def quality(self, value: int):
@@ -28,14 +33,14 @@ class ImageProfileStub(ImageProfileAbstract):
 
     @classmethod
     def get_extension(cls) -> str:
-        raise NotImplementedError()
+        return "jpeg"
 
 
 class ImageProfileFormStub(ImageProfileForm):
     intfield = forms.IntegerField()
 
     def get_profile(self) -> ImageProfileAbstract:
-        return ImageProfileStub()
+        return ImageProfileStub(quality=75)
 
     @classmethod
     def get_profile_type(self) -> str:
@@ -46,11 +51,21 @@ class ImageProfileFormStub2(ImageProfileForm):
     intfield = forms.IntegerField()
 
     def get_profile(self) -> ImageProfileAbstract:
-        return ImageProfileStub()
+        return ImageProfileStub(quality=75)
 
     @classmethod
     def get_profile_type(self) -> str:
         return "png_plain"
+
+
+# Fixtures
+########################################################################################
+
+
+@pytest.fixture(scope="function")
+def temp_dir():
+    with TemporaryDirectory() as dir_name:
+        yield dir_name
 
 
 # Tests
@@ -114,3 +129,25 @@ def test_route_querydict_None():
 
 
 # ImageProcessingService.create_image()
+
+
+def test_create_image_quality_None(temp_dir):
+    service = ImageProcessingService()
+    result_image_path = service.create_image(ImageProfileStub(quality=None), temp_dir)
+    assert os.path.isfile(result_image_path)
+    assert os.path.splitext(result_image_path)[1] == ".jpeg"
+
+
+def test_create_image_quality_75(temp_dir):
+    service = ImageProcessingService()
+    result_image_path = service.create_image(ImageProfileStub(quality=75), temp_dir)
+    assert os.path.isfile(result_image_path)
+    assert os.path.splitext(result_image_path)[1] == ".jpeg"
+
+
+def test_create_image_base_dir_not_exist():
+    service = ImageProcessingService()
+    fake_dir = "/path/to/fake/dir"
+    expected_error_message = "No such directory. base_dir: /path/to/fake/dir"
+    with pytest.raises(FileNotFoundError, match=expected_error_message):
+        service.create_image(ImageProfileStub(quality=75), fake_dir)
