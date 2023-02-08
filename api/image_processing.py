@@ -184,4 +184,4 @@ class JPEGPlainProfileForm(ImageProfileForm):
 
     @classmethod
     def get_profile_type(cls) -> str:
-        return "jpag_plain"
+        return "jpeg_plain"
