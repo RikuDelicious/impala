@@ -1,7 +1,7 @@
 from __future__ import annotations
 
+import os
 from abc import ABC, abstractmethod
-from pathlib import Path
 
 from django.http import QueryDict
 
@@ -14,7 +14,7 @@ class ImageProcessingServiceAbstract(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def create_image(self, profile: ImageProfileAbstract) -> Path:
+    def create_image(self, profile: ImageProfileAbstract, base_dir: str) -> str:
         raise NotImplementedError()
 
 
@@ -52,8 +52,19 @@ class ImageProcessingService(ImageProcessingServiceAbstract):
         else:
             raise QueryError(dict(profile_form.errors))
 
-    def create_image(self, profile: ImageProfileAbstract) -> Path:
-        raise NotImplementedError()
+    def create_image(self, profile: ImageProfileAbstract, base_dir: str) -> str:
+        pil_image = profile.create_pil_image()
+        if os.path.isdir(base_dir):
+            tmp_image_path = os.path.join(base_dir, f"tmp.{profile.get_extension()}")
+        else:
+            raise FileNotFoundError(f"No such directory. base_dir: {base_dir}")
+
+        if profile.quality is None:
+            pil_image.save(tmp_image_path)
+        else:
+            pil_image.save(tmp_image_path, quality=profile.quality)
+
+        return tmp_image_path
 
 
 class ImageModelServiceAbstract(ABC):
@@ -62,7 +73,7 @@ class ImageModelServiceAbstract(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def upload_image(self, image_path: Path) -> str:
+    def upload_image(self, image_path: str) -> str:
         raise NotImplementedError()
 
 
@@ -70,5 +81,5 @@ class ImageModelService:
     def get_cache_image_url(self, profile: ImageProfileAbstract) -> str | None:
         raise NotImplementedError()
 
-    def upload_image(self, image_path: Path) -> str:
+    def upload_image(self, image_path: str) -> str:
         raise NotImplementedError()
