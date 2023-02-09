@@ -171,7 +171,7 @@ class JPEGPlainProfileForm(ImageProfileForm):
         required=True,
     )
     quality = forms.IntegerField(
-        initial=75,
+        required=True,
         min_value=JPEGPlainProfile.min_quality,
         max_value=JPEGPlainProfile.max_quality,
     )
