@@ -2,6 +2,8 @@ import pytest
 from django.core.exceptions import ValidationError
 
 from api.image_processing import (
+    ColorRGB,
+    HexRGBColorCodeField,
     hex_RGB_color_code_pattern,
     parse_hex_RGB_color_code,
     validate_hex_RGB_color_code,
@@ -120,3 +122,45 @@ def test_parse_hex_RGB_color_code_shorthand(code, rgb_values):
 )
 def test_parse_hex_RGB_color_code_full(code, rgb_values):
     assert parse_hex_RGB_color_code(code) == rgb_values
+
+
+# HexRGBColorCodeField
+
+
+@pytest.mark.parametrize(
+    "code, color_rgb",
+    [
+        ("000", ColorRGB(0, 0, 0)),
+        ("678", ColorRGB(102, 119, 136)),
+        ("abc", ColorRGB(170, 187, 204)),
+        ("fff", ColorRGB(255, 255, 255)),
+    ],
+)
+def test_HexRGBColorCodeField_clean_valid_shorthand(code, color_rgb):
+    field = HexRGBColorCodeField()
+    result = field.clean(code)
+    assert result == color_rgb
+
+
+@pytest.mark.parametrize(
+    "code, color_rgb",
+    [
+        ("000000", ColorRGB(0, 0, 0)),
+        ("324C96", ColorRGB(50, 76, 150)),
+        ("C67345", ColorRGB(198, 115, 69)),
+        ("FFFFFF", ColorRGB(255, 255, 255)),
+    ],
+)
+def test_HexRGBColorCodeField_clean_valid_full(code, color_rgb):
+    field = HexRGBColorCodeField()
+    result = field.clean(code)
+    assert result == color_rgb
+
+
+def test_HexRGBColorCodeField_clean_invalid(invalid_color_code):
+    field = HexRGBColorCodeField()
+    with pytest.raises(
+        ValidationError,
+        match=f"{invalid_color_code} is not a valid hex RGB color code.",
+    ):
+        field.clean(invalid_color_code)
