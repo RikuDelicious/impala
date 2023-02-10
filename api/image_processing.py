@@ -90,10 +90,10 @@ class JPEGPlainProfile(ImageProfileAbstract):
         color_rgb: ColorRGB = ColorRGB(),
         quality: int = 75,
     ):
-        self.width = width
-        self.height = height
+        self.width = clamp(width, self.min_size, self.max_size)
+        self.height = clamp(height, self.min_size, self.max_size)
         self.color_rgb = color_rgb
-        self._quality = quality
+        self._quality = clamp(quality, self.min_quality, self.max_quality)
 
     def create_pil_image(self) -> PIL.Image.Image:
         pil_image = PIL.Image.new(
