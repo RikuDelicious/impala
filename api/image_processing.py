@@ -124,6 +124,11 @@ def validate_hex_RGB_color_code(value):
 
 
 def parse_hex_RGB_color_code(color_code_string):
+    """
+    カラーコード文字列を数値に変換する
+    既に検証を通過した文字列が渡される想定のため、
+    この関数では再度バリデーションは行わない
+    """
     if len(color_code_string) == 3:
         hex_srtings = [s + s for s in color_code_string]
     elif len(color_code_string) == 6:
