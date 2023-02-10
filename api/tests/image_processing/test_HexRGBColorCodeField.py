@@ -1,6 +1,7 @@
 import pytest
+from django.core.exceptions import ValidationError
 
-from api.image_processing import hex_RGB_color_code_pattern
+from api.image_processing import hex_RGB_color_code_pattern, validate_hex_RGB_color_code
 
 
 def valid_color_codes():
@@ -59,3 +60,18 @@ def test_hex_RGB_color_code_pattern_match(valid_color_code):
 
 def test_hex_RGB_color_code_pattern_not_match(invalid_color_code):
     assert hex_RGB_color_code_pattern.fullmatch(invalid_color_code) is None
+
+
+def test_validate_hex_RGB_color_code_valid(valid_color_code):
+    try:
+        validate_hex_RGB_color_code(valid_color_code)
+    except Exception as ex:
+        pytest.fail(ex)
+
+
+def test_validate_hex_RGB_color_code_invalid(invalid_color_code):
+    with pytest.raises(
+        ValidationError,
+        match=f"{invalid_color_code} is not a valid hex RGB color code.",
+    ):
+        validate_hex_RGB_color_code(invalid_color_code)
