@@ -1,7 +1,14 @@
 import pytest
 from django.core.exceptions import ValidationError
 
-from api.image_processing import hex_RGB_color_code_pattern, validate_hex_RGB_color_code
+from api.image_processing import (
+    hex_RGB_color_code_pattern,
+    parse_hex_RGB_color_code,
+    validate_hex_RGB_color_code,
+)
+
+# Plugins
+########################################################################################
 
 
 def valid_color_codes():
@@ -47,6 +54,12 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize("invalid_color_code", invalid_color_codes())
 
 
+# Tests
+########################################################################################
+
+# hex_RGB_color_code_pattern
+
+
 def test_hex_RGB_color_code_pattern_match(valid_color_code):
     """
     3桁及び6桁のカラーコードで、各桁でa-fA-F0-9の全ての文字が使えることを検証する
@@ -62,6 +75,9 @@ def test_hex_RGB_color_code_pattern_not_match(invalid_color_code):
     assert hex_RGB_color_code_pattern.fullmatch(invalid_color_code) is None
 
 
+# validate_hex_RGB_color_code
+
+
 def test_validate_hex_RGB_color_code_valid(valid_color_code):
     try:
         validate_hex_RGB_color_code(valid_color_code)
@@ -75,3 +91,32 @@ def test_validate_hex_RGB_color_code_invalid(invalid_color_code):
         match=f"{invalid_color_code} is not a valid hex RGB color code.",
     ):
         validate_hex_RGB_color_code(invalid_color_code)
+
+
+# parse_hex_RGB_color_code
+
+
+@pytest.mark.parametrize(
+    "code, rgb_values",
+    [
+        ("000", (0, 0, 0)),
+        ("678", (102, 119, 136)),
+        ("abc", (170, 187, 204)),
+        ("fff", (255, 255, 255)),
+    ],
+)
+def test_parse_hex_RGB_color_code_shorthand(code, rgb_values):
+    assert parse_hex_RGB_color_code(code) == rgb_values
+
+
+@pytest.mark.parametrize(
+    "code, rgb_values",
+    [
+        ("000000", (0, 0, 0)),
+        ("324C96", (50, 76, 150)),
+        ("C67345", (198, 115, 69)),
+        ("FFFFFF", (255, 255, 255)),
+    ],
+)
+def test_parse_hex_RGB_color_code_full(code, rgb_values):
+    assert parse_hex_RGB_color_code(code) == rgb_values
