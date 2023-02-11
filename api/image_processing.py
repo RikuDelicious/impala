@@ -110,6 +110,42 @@ class JPEGPlainProfile(ImageProfileAbstract):
         return "jpeg"
 
 
+class PNGPlainProfile(ImageProfileAbstract):
+    max_size: int = 15360
+    min_size: int = 1
+    max_alpha = 255
+    min_alpha = 0
+
+    def __init__(
+        self,
+        width: int = 48,
+        height: int = 48,
+        color_rgb: ColorRGB = ColorRGB(),
+        alpha: int = 255,
+    ):
+        self.width = clamp(width, self.min_size, self.max_size)
+        self.height = clamp(height, self.min_size, self.max_size)
+        self.color_rgb = color_rgb
+        self.alpha = clamp(alpha, self.min_alpha, self.max_alpha)
+
+    def create_pil_image(self) -> PIL.Image.Image:
+        pil_image = PIL.Image.new(
+            mode="RGB",
+            size=(self.width, self.height),
+            color=self.color_rgb.to_tuple(),
+        )
+        pil_image.putalpha(self.alpha)
+        return pil_image
+
+    @property
+    def quality(self) -> int | None:
+        return None
+
+    @classmethod
+    def get_extension(cls) -> str:
+        return "png"
+
+
 # Form fields
 ########################################################################################
 
@@ -190,3 +226,36 @@ class JPEGPlainProfileForm(ImageProfileForm):
     @classmethod
     def get_profile_type(cls) -> str:
         return "jpeg_plain"
+
+
+class PNGPlainProfileForm(ImageProfileForm):
+    profile_class = PNGPlainProfile
+
+    width = forms.IntegerField(
+        required=True,
+        min_value=PNGPlainProfile.min_size,
+        max_value=PNGPlainProfile.max_size,
+    )
+    height = forms.IntegerField(
+        required=True,
+        min_value=PNGPlainProfile.min_size,
+        max_value=PNGPlainProfile.max_size,
+    )
+    color_rgb = HexRGBColorCodeField(
+        required=True,
+    )
+    alpha = forms.IntegerField(
+        required=True,
+        min_value=PNGPlainProfile.min_alpha,
+        max_value=PNGPlainProfile.max_alpha,
+    )
+
+    def get_profile(self) -> ImageProfileAbstract:
+        if self.is_valid():
+            return self.profile_class(**self.cleaned_data)
+        else:
+            raise QueryError(dict(self.errors))
+
+    @classmethod
+    def get_profile_type(cls) -> str:
+        return "png_plain"

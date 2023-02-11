@@ -10,6 +10,7 @@ from .image_processing import (
     ImageProfileAbstract,
     ImageProfileForm,
     JPEGPlainProfileForm,
+    PNGPlainProfileForm,
     QueryError,
 )
 
@@ -25,7 +26,10 @@ class ImageProcessingServiceAbstract(ABC):
 
 
 class ImageProcessingService(ImageProcessingServiceAbstract):
-    form_classes: list[Type[ImageProfileForm]] = [JPEGPlainProfileForm]
+    form_classes: list[Type[ImageProfileForm]] = [
+        JPEGPlainProfileForm,
+        PNGPlainProfileForm,
+    ]
 
     def route_querydict(self, querydict: QueryDict) -> ImageProfileForm:
         """
