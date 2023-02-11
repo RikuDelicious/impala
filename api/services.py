@@ -2,10 +2,16 @@ from __future__ import annotations
 
 import os
 from abc import ABC, abstractmethod
+from typing import Sequence, Type
 
 from django.http import QueryDict
 
-from .image_processing import ImageProfileAbstract, ImageProfileForm, QueryError
+from .image_processing import (
+    ImageProfileAbstract,
+    ImageProfileForm,
+    JPEGPlainProfileForm,
+    QueryError,
+)
 
 
 class ImageProcessingServiceAbstract(ABC):
@@ -19,7 +25,7 @@ class ImageProcessingServiceAbstract(ABC):
 
 
 class ImageProcessingService(ImageProcessingServiceAbstract):
-    form_classes: list[ImageProfileForm] = []
+    form_classes: list[Type[ImageProfileForm]] = [JPEGPlainProfileForm]
 
     def route_querydict(self, querydict: QueryDict) -> ImageProfileForm:
         """
