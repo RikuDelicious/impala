@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 from abc import ABC, abstractmethod
-from typing import Sequence, Type
+from typing import Type
 
 from django.http import QueryDict
 
