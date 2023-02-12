@@ -96,7 +96,7 @@ class ImageModelServiceAbstract(ABC):
         raise NotImplementedError()
 
 
-class ImageModelService:
+class ImageModelService(ImageModelServiceAbstract):
     model = models.Image
 
     @classmethod
