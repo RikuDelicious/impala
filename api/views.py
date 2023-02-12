@@ -1,19 +1,27 @@
 import json
 from tempfile import TemporaryDirectory
+from typing import Type
 
 from django.http import HttpRequest, HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.views.generic.base import View
 
 from .image_processing import QueryError
-from .services import ImageModelService, ImageProcessingService
+from .services import (
+    ImageModelService,
+    ImageModelServiceAbstract,
+    ImageProcessingService,
+    ImageProcessingServiceAbstract,
+)
 
 
 # Create your views here.
 class GetView(View):
     http_method_names = ["get"]
-    image_processing_service = ImageProcessingService
-    image_model_service = ImageModelService
+    image_processing_service: Type[
+        ImageProcessingServiceAbstract
+    ] = ImageProcessingService
+    image_model_service: Type[ImageModelServiceAbstract] = ImageModelService
 
     def get(self, request: HttpRequest):
         try:
