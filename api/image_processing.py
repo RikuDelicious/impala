@@ -76,6 +76,10 @@ class ImageProfileAbstract(ABC):
     def get_extension(cls) -> str:
         raise NotImplementedError()
 
+    @abstractmethod
+    def dump_signiture(self) -> str:
+        raise NotImplementedError()
+
 
 class JPEGPlainProfile(ImageProfileAbstract):
     max_size: int = 15360
@@ -108,6 +112,9 @@ class JPEGPlainProfile(ImageProfileAbstract):
     @classmethod
     def get_extension(cls) -> str:
         return "jpeg"
+
+    def dump_signiture(self) -> str:
+        raise NotImplementedError()
 
 
 class PNGPlainProfile(ImageProfileAbstract):
@@ -144,6 +151,9 @@ class PNGPlainProfile(ImageProfileAbstract):
     @classmethod
     def get_extension(cls) -> str:
         return "png"
+
+    def dump_signiture(self) -> str:
+        raise NotImplementedError()
 
 
 # Form fields
