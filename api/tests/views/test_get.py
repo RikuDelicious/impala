@@ -26,8 +26,15 @@ class ImageProfileStub(ImageProfileAbstract):
     def quality(self) -> int | None:
         raise NotImplementedError()
 
+    @property
+    def upload_file_name(self) -> str:
+        raise NotImplementedError()
+
     @classmethod
     def get_extension(cls) -> str:
+        raise NotImplementedError()
+
+    def dump_signiture(self) -> str:
         raise NotImplementedError()
 
 
@@ -43,7 +50,7 @@ class ImageModelServiceStub(ImageModelServiceAbstract):
     def get_cache_image_url(self, profile: ImageProfileAbstract) -> str | None:
         return "http://example.com/cache.jpeg"
 
-    def upload_image(self, image_path: str) -> str:
+    def upload_image(self, image_path: str, profile: ImageProfileAbstract) -> str:
         return "http://example.com/uploaded.jpeg"
 
 
