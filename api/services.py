@@ -85,7 +85,7 @@ class ImageModelServiceAbstract(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def upload_image(self, image_path: str) -> str:
+    def upload_image(self, image_path: str, profile: ImageProfileAbstract) -> str:
         raise NotImplementedError()
 
 

@@ -35,5 +35,5 @@ def get(
     else:
         with TemporaryDirectory() as temp_dir_name:
             image_path = image_processing.create_image(profile, temp_dir_name)
-            image_url = image_model.upload_image(image_path)
+            image_url = image_model.upload_image(image_path, profile)
         return redirect(image_url)
