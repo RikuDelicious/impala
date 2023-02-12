@@ -81,48 +81,45 @@ def invalid_query(request):
 
 
 def test_create_profile_query_valid(valid_query):
-    service = ImageProcessingService()
-    result = service.create_profile(QueryDict(valid_query["query"]))
+    result = ImageProcessingService.create_profile(QueryDict(valid_query["query"]))
     assert isinstance(result, valid_query["profile_class"])
 
 
 def test_create_profile_query_invalid(invalid_query):
-    service = ImageProcessingService()
     with pytest.raises(QueryError):
-        service.create_profile(QueryDict(invalid_query["query"]))
+        ImageProcessingService.create_profile(QueryDict(invalid_query["query"]))
 
 
 # ImageProcessingService.route_querydict()
 
 
 def test_route_querydict_form_routed(valid_query):
-    service = ImageProcessingService()
-
-    result = service.route_querydict(QueryDict(valid_query["query"]))
+    result = ImageProcessingService.route_querydict(QueryDict(valid_query["query"]))
     assert isinstance(result, valid_query["profile_form_class"])
 
 
 def test_route_querydict_form_not_routed():
-    service = ImageProcessingService()
     querydict = QueryDict(
         "profile_type=hogehoge&width=512&height=1024&color_rgb=B5F1CC&quality=63"
     )
     profile_types = ", ".join(
-        [f'"{form_class.get_profile_type()}"' for form_class in service.form_classes]
+        [
+            f'"{form_class.get_profile_type()}"'
+            for form_class in ImageProcessingService.form_classes
+        ]
     )
     error_message = f"このフィールドには次のうちいずれかの値を入力してください。({profile_types})"
 
     with pytest.raises(QueryError) as exc_info:
-        service.route_querydict(querydict)
+        ImageProcessingService.route_querydict(querydict)
     assert exc_info.value.messages == {"profile_type": [error_message]}
 
 
 def test_route_querydict_None():
-    service = ImageProcessingService()
     querydict = QueryDict("width=512&height=1024&color_rgb=B5F1CC&quality=63")
 
     with pytest.raises(QueryError) as exc_info:
-        service.route_querydict(querydict)
+        ImageProcessingService.route_querydict(querydict)
 
     error_message = "このフィールドは必須です"
     assert exc_info.value.messages == {"profile_type": [error_message]}
@@ -132,27 +129,24 @@ def test_route_querydict_None():
 
 
 def test_create_image_quality_None(temp_dir):
-    service = ImageProcessingService()
     sample_profile = PNGPlainProfile(
         width=265, height=411, color_rgb=ColorRGB(160, 132, 220), alpha=198
     )
-    result_image_path = service.create_image(sample_profile, temp_dir)
+    result_image_path = ImageProcessingService.create_image(sample_profile, temp_dir)
     assert os.path.isfile(result_image_path)
     assert os.path.splitext(result_image_path)[1] == ".png"
 
 
 def test_create_image_quality_not_None(temp_dir):
-    service = ImageProcessingService()
     sample_profile = JPEGPlainProfile(
         width=123, height=856, color_rgb=ColorRGB(93, 56, 145), quality=70
     )
-    result_image_path = service.create_image(sample_profile, temp_dir)
+    result_image_path = ImageProcessingService.create_image(sample_profile, temp_dir)
     assert os.path.isfile(result_image_path)
     assert os.path.splitext(result_image_path)[1] == ".jpeg"
 
 
 def test_create_image_base_dir_not_exist():
-    service = ImageProcessingService()
     sample_profile = JPEGPlainProfile(
         width=123, height=856, color_rgb=ColorRGB(93, 56, 145), quality=70
     )
@@ -160,4 +154,4 @@ def test_create_image_base_dir_not_exist():
     expected_error_message = "No such directory. base_dir: /path/to/fake/dir"
 
     with pytest.raises(FileNotFoundError, match=expected_error_message):
-        service.create_image(sample_profile, fake_dir)
+        ImageProcessingService.create_image(sample_profile, fake_dir)
