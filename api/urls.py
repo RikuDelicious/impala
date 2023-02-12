@@ -4,4 +4,4 @@ from . import views
 
 app_name = "api"
 
-urlpatterns = [path("get/", views.get, name="get")]
+urlpatterns = [path("get/", views.GetView.as_view(), name="get")]
