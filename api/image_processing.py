@@ -71,6 +71,11 @@ class ImageProfileAbstract(ABC):
     def quality(self) -> int | None:
         raise NotImplementedError()
 
+    @property
+    @abstractmethod
+    def upload_file_name(self) -> str:
+        raise NotImplementedError()
+
     @classmethod
     @abstractmethod
     def get_extension(cls) -> str:
@@ -108,6 +113,10 @@ class JPEGPlainProfile(ImageProfileAbstract):
     @property
     def quality(self) -> int | None:
         return self._quality
+
+    @property
+    def upload_file_name(self) -> str:
+        raise NotImplementedError()
 
     @classmethod
     def get_extension(cls) -> str:
@@ -147,6 +156,10 @@ class PNGPlainProfile(ImageProfileAbstract):
     @property
     def quality(self) -> int | None:
         return None
+
+    @property
+    def upload_file_name(self) -> str:
+        raise NotImplementedError()
 
     @classmethod
     def get_extension(cls) -> str:
