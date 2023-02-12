@@ -28,7 +28,7 @@ def clamp(value: int, min: int, max: int):
 
 
 class QueryError(Exception):
-    def __init__(self, messages: dict[str, str | list[str]]):
+    def __init__(self, messages: dict[str, str] | dict[str, list[str]]):
         self.messages = messages
 
 
