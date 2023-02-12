@@ -1,24 +1,15 @@
 import json
 from tempfile import TemporaryDirectory
 
-from dependency_injector.wiring import Provide, inject
 from django.http import HttpRequest, HttpResponseBadRequest
 from django.shortcuts import redirect
 
-from .containers import Container
 from .image_processing import QueryError
-from .services import ImageModelServiceAbstract, ImageProcessingServiceAbstract
+from .services import ImageModelService, ImageProcessingService
 
 
 # Create your views here.
-@inject
-def get(
-    request: HttpRequest,
-    image_processing: ImageProcessingServiceAbstract = Provide[
-        Container.image_processing_service
-    ],
-    image_model: ImageModelServiceAbstract = Provide[Container.image_model_service],
-):
+def get(request: HttpRequest):
     try:
         profile = image_processing.create_profile(request.GET)
     except QueryError as query_error:
