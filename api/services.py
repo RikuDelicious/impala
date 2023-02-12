@@ -4,8 +4,10 @@ import os
 from abc import ABC, abstractmethod
 from typing import Type
 
+from django.core.files import File
 from django.http import QueryDict
 
+from . import models
 from .image_processing import (
     ImageProfileAbstract,
     ImageProfileForm,
@@ -88,8 +90,19 @@ class ImageModelServiceAbstract(ABC):
 
 
 class ImageModelService:
-    def get_cache_image_url(self, profile: ImageProfileAbstract) -> str | None:
-        raise NotImplementedError()
+    model = models.Image
 
-    def upload_image(self, image_path: str) -> str:
-        raise NotImplementedError()
+    def get_cache_image_url(self, profile: ImageProfileAbstract) -> str | None:
+        queryset = self.model.objects.filter(profile_signiture=profile.dump_signiture())
+        if queryset.exists():
+            return queryset.first()
+        else:
+            return None
+
+    def upload_image(self, image_path: str, profile: ImageProfileAbstract) -> str:
+        with open(image_path, "rb") as f:
+            upload_file = File(f, name=profile.upload_file_name)
+            image = self.model.objects.create(
+                upload=upload_file, profile_signiture=profile.dump_signiture()
+            )
+            return image.upload.url
