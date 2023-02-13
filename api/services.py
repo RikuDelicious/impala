@@ -103,7 +103,7 @@ class ImageModelService(ImageModelServiceAbstract):
     def get_cache_image_url(cls, profile: ImageProfileAbstract) -> str | None:
         queryset = cls.model.objects.filter(profile_signiture=profile.dump_signiture())
         if queryset.exists():
-            return queryset.first()
+            return queryset.first().upload.url
         else:
             return None
 
