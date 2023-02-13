@@ -71,6 +71,11 @@ def temp_dir():
         yield dir_name
 
 
+@pytest.fixture(scope="session")
+def stub_form_classes():
+    return [ImageProfileFormStub2, ImageProfileFormStub]
+
+
 # Tests
 ########################################################################################
 
@@ -97,33 +102,33 @@ def test_create_profile_query_invalid():
 # ImageProcessingService.route_querydict()
 
 
-def test_route_querydict_form_routed():
-    ImageProcessingService.form_classes = [ImageProfileFormStub2, ImageProfileFormStub]
-    querydict = QueryDict("a=1&profile_type=jpeg_plain&b=2")
+def test_route_querydict_form_routed(stub_form_classes):
+    with patch.object(ImageProcessingService, "form_classes", stub_form_classes):
+        querydict = QueryDict("a=1&profile_type=jpeg_plain&b=2")
 
-    result = ImageProcessingService.route_querydict(querydict)
-    assert isinstance(result, ImageProfileFormStub)
-
-
-def test_route_querydict_form_not_routed():
-    ImageProcessingService.form_classes = [ImageProfileFormStub2, ImageProfileFormStub]
-    querydict = QueryDict("a=1&profile_type=not_supported_type&b=2")
-
-    with pytest.raises(QueryError) as exc_info:
-        ImageProcessingService.route_querydict(querydict)
-    error_message = 'このフィールドには次のうちいずれかの値を入力してください。("png_plain", "jpeg_plain")'
-    assert exc_info.value.messages == {"profile_type": [error_message]}
+        result = ImageProcessingService.route_querydict(querydict)
+        assert isinstance(result, ImageProfileFormStub)
 
 
-def test_route_querydict_None():
-    ImageProcessingService.form_classes = [ImageProfileFormStub2, ImageProfileFormStub]
-    querydict = QueryDict("a=1&b=2")
+def test_route_querydict_form_not_routed(stub_form_classes):
+    with patch.object(ImageProcessingService, "form_classes", stub_form_classes):
+        querydict = QueryDict("a=1&profile_type=not_supported_type&b=2")
 
-    with pytest.raises(QueryError) as exc_info:
-        ImageProcessingService.route_querydict(querydict)
+        with pytest.raises(QueryError) as exc_info:
+            ImageProcessingService.route_querydict(querydict)
+        error_message = 'このフィールドには次のうちいずれかの値を入力してください。("png_plain", "jpeg_plain")'
+        assert exc_info.value.messages == {"profile_type": [error_message]}
 
-    error_message = "このフィールドは必須です"
-    assert exc_info.value.messages == {"profile_type": [error_message]}
+
+def test_route_querydict_None(stub_form_classes):
+    with patch.object(ImageProcessingService, "form_classes", stub_form_classes):
+        querydict = QueryDict("a=1&b=2")
+
+        with pytest.raises(QueryError) as exc_info:
+            ImageProcessingService.route_querydict(querydict)
+
+        error_message = "このフィールドは必須です"
+        assert exc_info.value.messages == {"profile_type": [error_message]}
 
 
 # ImageProcessingService.create_image()
