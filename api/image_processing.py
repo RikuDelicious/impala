@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import re
 from abc import ABC, abstractmethod
 from collections import OrderedDict
@@ -21,6 +22,16 @@ def clamp(value: int, min: int, max: int):
     if value > max:
         return max
     return value
+
+
+def jsondump_fixed(ordered_dict: OrderedDict) -> str:
+    return json.dumps(
+        ordered_dict,
+        separators=(",", ":"),
+        indent=None,
+        sort_keys=False,
+        ensure_ascii=True,
+    )
 
 
 # Exceptions
@@ -116,14 +127,22 @@ class JPEGPlainProfile(ImageProfileAbstract):
 
     @property
     def upload_file_name(self) -> str:
-        raise NotImplementedError()
+        return f"jpeg_plain_width_{self.width}_height_{self.height}_color_r_{self.color_rgb.r}_g_{self.color_rgb.g}_b_{self.color_rgb.b}_quality_{self.quality}"
 
     @classmethod
     def get_extension(cls) -> str:
         return "jpeg"
 
     def dump_signiture(self) -> str:
-        raise NotImplementedError()
+        signiture_dict = OrderedDict(
+            jpeg_plain=OrderedDict(
+                width=self.width,
+                height=self.height,
+                color_rgb=self.color_rgb.to_ordered_dict(),
+                quality=self.quality,
+            ),
+        )
+        return jsondump_fixed(signiture_dict)
 
 
 class PNGPlainProfile(ImageProfileAbstract):
@@ -159,14 +178,22 @@ class PNGPlainProfile(ImageProfileAbstract):
 
     @property
     def upload_file_name(self) -> str:
-        raise NotImplementedError()
+        return f"png_plain_width_{self.width}_height_{self.height}_color_r_{self.color_rgb.r}_g_{self.color_rgb.g}_b_{self.color_rgb.b}_alpha_{self.alpha}"
 
     @classmethod
     def get_extension(cls) -> str:
         return "png"
 
     def dump_signiture(self) -> str:
-        raise NotImplementedError()
+        signiture_dict = OrderedDict(
+            png=OrderedDict(
+                width=self.width,
+                height=self.height,
+                color_rgb=self.color_rgb.to_ordered_dict(),
+                alpha=self.alpha,
+            )
+        )
+        return jsondump_fixed(signiture_dict)
 
 
 # Form fields
