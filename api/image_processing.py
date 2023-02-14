@@ -186,7 +186,7 @@ class PNGPlainProfile(ImageProfileAbstract):
 
     def dump_signiture(self) -> str:
         signiture_dict = OrderedDict(
-            png=OrderedDict(
+            png_plain=OrderedDict(
                 width=self.width,
                 height=self.height,
                 color_rgb=self.color_rgb.to_ordered_dict(),
