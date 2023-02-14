@@ -1,6 +1,6 @@
 import pytest
 
-from api.image_processing import ColorRGB, JPEGPlainProfile
+from api.image_processing import ColorRGB, JPEGPlainProfile, JPEGPlainProfileForm
 
 
 @pytest.fixture(scope="session")
@@ -59,3 +59,18 @@ def test_create_pil_image(profile_dict):
     assert pil_image.mode == "RGB"
     assert pil_image.width == 512
     assert pil_image.height == 1024
+
+
+def test_upload_file_name(profile_dict):
+    profile = JPEGPlainProfile(**profile_dict)
+    assert (
+        profile.upload_file_name
+        == f"{JPEGPlainProfileForm.get_profile_type()}_width_512_height_1024_color_r_139_g_86_b_221_quality_65"
+    )
+
+
+def test_dump_signiture(profile_dict):
+    profile = JPEGPlainProfile(**profile_dict)
+    assert profile.dump_signiture() == '{"%s":{"width":512,"height":1024,"color_rgb":{"r":139,"g":86,"b":221},"quality":65}}' % (
+        JPEGPlainProfileForm.get_profile_type(),
+    )

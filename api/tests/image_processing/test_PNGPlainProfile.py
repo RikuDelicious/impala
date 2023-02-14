@@ -1,6 +1,6 @@
 import pytest
 
-from api.image_processing import ColorRGB, PNGPlainProfile
+from api.image_processing import ColorRGB, PNGPlainProfile, PNGPlainProfileForm
 
 
 @pytest.fixture(scope="session")
@@ -59,3 +59,18 @@ def test_create_pil_image(profile_dict):
     assert pil_image.mode == "RGBA"
     assert pil_image.width == 512
     assert pil_image.height == 1024
+
+
+def test_upload_file_name(profile_dict):
+    profile = PNGPlainProfile(**profile_dict)
+    assert (
+        profile.upload_file_name
+        == f"{PNGPlainProfileForm.get_profile_type()}_width_512_height_1024_color_r_139_g_86_b_221_alpha_193"
+    )
+
+
+def test_dump_signiture(profile_dict):
+    profile = PNGPlainProfile(**profile_dict)
+    assert profile.dump_signiture() == '{"%s":{"width":512,"height":1024,"color_rgb":{"r":139,"g":86,"b":221},"alpha":193}}' % (
+        PNGPlainProfileForm.get_profile_type(),
+    )
