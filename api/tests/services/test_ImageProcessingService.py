@@ -116,7 +116,7 @@ def test_route_querydict_form_not_routed(stub_form_classes):
 
         with pytest.raises(QueryError) as exc_info:
             ImageProcessingService.route_querydict(querydict)
-        error_message = 'このフィールドには次のうちいずれかの値を入力してください。("png_plain", "jpeg_plain")'
+        error_message = "このフィールドには次のうちいずれかの値を入力してください。(png_plain, jpeg_plain)"
         assert exc_info.value.messages == {"profile_type": [error_message]}
 
 
