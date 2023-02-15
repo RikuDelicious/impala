@@ -27,7 +27,7 @@ class GetView(View):
         try:
             profile = self.image_processing_service.create_profile(request.GET)
         except QueryError as query_error:
-            messages = json.dumps(query_error.messages)
+            messages = json.dumps(query_error.messages, ensure_ascii=False)
             return HttpResponseBadRequest(messages, content_type="application/json")
         except Exception:
             # 500 Internal Error
