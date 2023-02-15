@@ -65,7 +65,7 @@ def test_upload_file_name(profile_dict):
     profile = JPEGPlainProfile(**profile_dict)
     assert (
         profile.upload_file_name
-        == f"{JPEGPlainProfileForm.get_profile_type()}_width_512_height_1024_color_r_139_g_86_b_221_quality_65"
+        == f"{JPEGPlainProfileForm.get_profile_type()}_width_512_height_1024_color_r_139_g_86_b_221_quality_65.{JPEGPlainProfile.get_extension()}"
     )
 
 

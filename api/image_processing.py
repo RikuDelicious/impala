@@ -127,7 +127,7 @@ class JPEGPlainProfile(ImageProfileAbstract):
 
     @property
     def upload_file_name(self) -> str:
-        return f"jpeg_plain_width_{self.width}_height_{self.height}_color_r_{self.color_rgb.r}_g_{self.color_rgb.g}_b_{self.color_rgb.b}_quality_{self.quality}"
+        return f"jpeg_plain_width_{self.width}_height_{self.height}_color_r_{self.color_rgb.r}_g_{self.color_rgb.g}_b_{self.color_rgb.b}_quality_{self.quality}.{self.get_extension()}"
 
     @classmethod
     def get_extension(cls) -> str:
@@ -178,7 +178,7 @@ class PNGPlainProfile(ImageProfileAbstract):
 
     @property
     def upload_file_name(self) -> str:
-        return f"png_plain_width_{self.width}_height_{self.height}_color_r_{self.color_rgb.r}_g_{self.color_rgb.g}_b_{self.color_rgb.b}_alpha_{self.alpha}"
+        return f"png_plain_width_{self.width}_height_{self.height}_color_r_{self.color_rgb.r}_g_{self.color_rgb.g}_b_{self.color_rgb.b}_alpha_{self.alpha}.{self.get_extension()}"
 
     @classmethod
     def get_extension(cls) -> str:
