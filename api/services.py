@@ -51,10 +51,7 @@ class ImageProcessingService(ImageProcessingServiceAbstract):
             error_message = "このフィールドは必須です"
         else:
             expected_values = ", ".join(
-                [
-                    f'"{form_class.get_profile_type()}"'
-                    for form_class in cls.form_classes
-                ]
+                [form_class.get_profile_type() for form_class in cls.form_classes]
             )
             error_message = f"このフィールドには次のうちいずれかの値を入力してください。({expected_values})"
 

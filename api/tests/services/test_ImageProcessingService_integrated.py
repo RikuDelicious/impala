@@ -104,7 +104,7 @@ def test_route_querydict_form_not_routed():
     )
     profile_types = ", ".join(
         [
-            f'"{form_class.get_profile_type()}"'
+            form_class.get_profile_type()
             for form_class in ImageProcessingService.form_classes
         ]
     )
