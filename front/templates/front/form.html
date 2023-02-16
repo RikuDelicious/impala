@@ -1,0 +1,21 @@
+{% extends 'front/base.html' %}
+{% block content %}
+    {% if form %}
+        <form action="#" method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <div>
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
+            <input type="submit" value="画像URLを生成">
+        </form>
+    {% endif %}
+    {% if result_image_url %}
+        <div>
+            <a href="{{ result_image_url }}">{{ result_image_url }}</a>
+        </div>
+    {% endif %}
+{% endblock content %}

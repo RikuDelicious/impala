@@ -1,8 +1,10 @@
 from django.urls import path
-from django.views.generic.base import TemplateView
+
+from .views import IndexView, ProfileFormView
 
 app_name = "front"
 
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="front/index.html"), name="index")
+    path("", IndexView.as_view(), name="index"),
+    path("<str:profile_type>/", ProfileFormView.as_view(), name="profile_form"),
 ]
