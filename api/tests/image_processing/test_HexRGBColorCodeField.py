@@ -164,3 +164,9 @@ def test_HexRGBColorCodeField_clean_invalid(invalid_color_code):
         match=f"{invalid_color_code} is not a valid hex RGB color code.",
     ):
         field.clean(invalid_color_code)
+
+
+def test_HexRGBColorCodeField_clean_original_cleaned_data():
+    field = HexRGBColorCodeField()
+    field.clean("324C96")
+    assert field.original_cleaned_data == "324C96"

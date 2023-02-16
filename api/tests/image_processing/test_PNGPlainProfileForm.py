@@ -200,3 +200,17 @@ def test_field_improper_values():
     }
     assert not form_improper_alpha.is_valid()
     assert form_improper_alpha.errors == {"alpha": ["Enter a whole number."]}
+
+
+def test_get_query_string_valid(querydict_all_proper):
+    form = PNGPlainProfileForm(querydict_all_proper)
+    assert (
+        form.get_query_string()
+        == "profile_type=png_plain&width=512&height=256&color_rgb=85CDFD&alpha=193"
+    )
+
+
+def test_get_query_string_invalid(querydict_improper):
+    form = PNGPlainProfileForm(querydict_improper)
+    with pytest.raises(QueryError):
+        form.get_query_string()

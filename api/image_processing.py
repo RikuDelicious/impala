@@ -228,6 +228,7 @@ class HexRGBColorCodeField(forms.CharField):
 
     def clean(self, value):
         cleaned_data = super().clean(value)
+        self.original_cleaned_data = cleaned_data
         rgb_tuple = parse_hex_RGB_color_code(cleaned_data)
         return ColorRGB(r=rgb_tuple[0], g=rgb_tuple[1], b=rgb_tuple[2])
 
@@ -244,27 +245,40 @@ class ImageProfileForm(forms.Form):
     def get_profile_type(cls) -> str:
         raise NotImplementedError()
 
+    def get_query_string(self) -> str:
+        raise NotImplementedError()
+
+    @classmethod
+    def get_description(cls) -> str:
+        raise NotImplementedError()
+
 
 class JPEGPlainProfileForm(ImageProfileForm):
     profile_class = JPEGPlainProfile
 
     width = forms.IntegerField(
         required=True,
+        initial=512,
         min_value=JPEGPlainProfile.min_size,
         max_value=JPEGPlainProfile.max_size,
+        help_text=f"画像の横サイズ（{JPEGPlainProfile.min_size} ~ {JPEGPlainProfile.max_size} px）",
     )
     height = forms.IntegerField(
         required=True,
+        initial=512,
         min_value=JPEGPlainProfile.min_size,
         max_value=JPEGPlainProfile.max_size,
+        help_text=f"画像の縦サイズ（{JPEGPlainProfile.min_size} ~ {JPEGPlainProfile.max_size} px）",
     )
     color_rgb = HexRGBColorCodeField(
-        required=True,
+        required=True, initial="000000", help_text="6桁または3桁のカラーコード（例：537FE7, fff）"
     )
     quality = forms.IntegerField(
         required=True,
+        initial=75,
         min_value=JPEGPlainProfile.min_quality,
         max_value=JPEGPlainProfile.max_quality,
+        help_text=f"画像のクオリティ（{JPEGPlainProfile.min_quality} ~ {JPEGPlainProfile.max_quality}）",
     )
 
     def get_profile(self) -> ImageProfileAbstract:
@@ -277,27 +291,50 @@ class JPEGPlainProfileForm(ImageProfileForm):
     def get_profile_type(cls) -> str:
         return "jpeg_plain"
 
+    def get_query_string(self) -> str:
+        if self.is_valid():
+            cleaned_data = self.cleaned_data.copy()
+            cleaned_data["color_rgb"] = self.fields["color_rgb"].original_cleaned_data
+
+            parameters = [f"profile_type={self.get_profile_type()}"] + [
+                f"{key}={value}" for key, value in cleaned_data.items()
+            ]
+            query_string = "&".join(parameters)
+            return query_string
+        else:
+            raise QueryError(dict(self.errors))
+
+    @classmethod
+    def get_description(cls) -> str:
+        return "JPEG形式の無地カラー画像"
+
 
 class PNGPlainProfileForm(ImageProfileForm):
     profile_class = PNGPlainProfile
 
     width = forms.IntegerField(
         required=True,
+        initial=512,
         min_value=PNGPlainProfile.min_size,
         max_value=PNGPlainProfile.max_size,
+        help_text=f"画像の横サイズ（{PNGPlainProfile.min_size} ~ {PNGPlainProfile.max_size} px）",
     )
     height = forms.IntegerField(
         required=True,
+        initial=512,
         min_value=PNGPlainProfile.min_size,
         max_value=PNGPlainProfile.max_size,
+        help_text=f"画像の縦サイズ（{PNGPlainProfile.min_size} ~ {PNGPlainProfile.max_size} px）",
     )
     color_rgb = HexRGBColorCodeField(
-        required=True,
+        required=True, initial="000000", help_text="6桁または3桁のカラーコード（例：537FE7, fff）"
     )
     alpha = forms.IntegerField(
         required=True,
+        initial=255,
         min_value=PNGPlainProfile.min_alpha,
         max_value=PNGPlainProfile.max_alpha,
+        help_text=f"画像のアルファ値（{PNGPlainProfile.min_alpha} ~ {PNGPlainProfile.max_alpha}）",
     )
 
     def get_profile(self) -> ImageProfileAbstract:
@@ -309,3 +346,20 @@ class PNGPlainProfileForm(ImageProfileForm):
     @classmethod
     def get_profile_type(cls) -> str:
         return "png_plain"
+
+    def get_query_string(self) -> str:
+        if self.is_valid():
+            cleaned_data = self.cleaned_data.copy()
+            cleaned_data["color_rgb"] = self.fields["color_rgb"].original_cleaned_data
+
+            parameters = [f"profile_type={self.get_profile_type()}"] + [
+                f"{key}={value}" for key, value in cleaned_data.items()
+            ]
+            query_string = "&".join(parameters)
+            return query_string
+        else:
+            raise QueryError(dict(self.errors))
+
+    @classmethod
+    def get_description(cls) -> str:
+        return "PNG形式の無地カラー画像"
