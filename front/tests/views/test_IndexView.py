@@ -16,7 +16,11 @@ class ProfileFormStub1(ImageProfileForm):
         return "profile_type_stub1"
 
     def get_query_string(self) -> str:
-        return "query_string_stub1"
+        return "query_string_stub1=some_value"
+
+    @classmethod
+    def get_description(cls) -> str:
+        return "profile_type_stub1_description"
 
 
 class ProfileFormStub2(ImageProfileForm):
@@ -25,7 +29,11 @@ class ProfileFormStub2(ImageProfileForm):
         return "profile_type_stub2"
 
     def get_query_string(self) -> str:
-        return "query_string_stub2"
+        return "query_string_stub2=some_value"
+
+    @classmethod
+    def get_description(cls) -> str:
+        return "profile_type_stub2_description"
 
 
 # Tests
@@ -55,11 +63,13 @@ def test_get_context_data(rf: RequestFactory):
                 "url": reverse(
                     "front:profile_form", kwargs={"profile_type": "profile_type_stub1"}
                 ),
+                "description": "profile_type_stub1_description",
             },
             {
                 "label": "profile_type_stub2",
                 "url": reverse(
                     "front:profile_form", kwargs={"profile_type": "profile_type_stub2"}
                 ),
+                "description": "profile_type_stub2_description",
             },
         ]

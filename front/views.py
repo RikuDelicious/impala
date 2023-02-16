@@ -20,6 +20,7 @@ class IndexView(TemplateView):
                     "front:profile_form",
                     kwargs={"profile_type": form_class.get_profile_type()},
                 ),
+                "description": form_class.get_description(),
             }
             for form_class in self.form_classes
         ]
@@ -45,6 +46,7 @@ class ProfileFormView(FormView):
                     "front:profile_form",
                     kwargs={"profile_type": form_class.get_profile_type()},
                 ),
+                "description": form_class.get_description(),
             }
             for form_class in self.form_classes
         ]

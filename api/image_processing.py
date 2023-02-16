@@ -248,6 +248,10 @@ class ImageProfileForm(forms.Form):
     def get_query_string(self) -> str:
         raise NotImplementedError()
 
+    @classmethod
+    def get_description(cls) -> str:
+        raise NotImplementedError()
+
 
 class JPEGPlainProfileForm(ImageProfileForm):
     profile_class = JPEGPlainProfile
@@ -300,6 +304,10 @@ class JPEGPlainProfileForm(ImageProfileForm):
         else:
             raise QueryError(dict(self.errors))
 
+    @classmethod
+    def get_description(cls) -> str:
+        return "JPEG形式の無地カラー画像"
+
 
 class PNGPlainProfileForm(ImageProfileForm):
     profile_class = PNGPlainProfile
@@ -351,3 +359,7 @@ class PNGPlainProfileForm(ImageProfileForm):
             return query_string
         else:
             raise QueryError(dict(self.errors))
+
+    @classmethod
+    def get_description(cls) -> str:
+        return "PNG形式の無地カラー画像"
