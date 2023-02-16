@@ -16,6 +16,12 @@
     {% if result_image_url %}
         <div>
             <a href="{{ result_image_url }}">{{ result_image_url }}</a>
+            <div>
+                <div>preview</div>
+                <div>
+                    <img src="{{ result_image_url }}" alt="preview">
+                </div>
+            </div>
         </div>
     {% endif %}
 {% endblock content %}
