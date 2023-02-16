@@ -1,6 +1,8 @@
 {% extends 'front/base.html' %}
 {% block content %}
     {% if form %}
+        <h2>画像生成用のURL生成ツール</h2>
+        <div>プロファイルタイプ: {{ form.get_profile_type }}</div>
         <form action="#" method="post">
             {% csrf_token %}
             {% for field in form %}
@@ -15,9 +17,10 @@
     {% endif %}
     {% if result_image_url %}
         <div>
+            <h3>画像URL</h3>
             <a href="{{ result_image_url }}">{{ result_image_url }}</a>
             <div>
-                <div>preview</div>
+                <h3>Preview</h3>
                 <div>
                     <img src="{{ result_image_url }}" alt="preview">
                 </div>

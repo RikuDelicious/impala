@@ -7,13 +7,31 @@
         <title>Document</title>
     </head>
     <body>
-        <ul>
-            {% for link in form_links %}
-                <li>
-                    <a href="{{ link.url }}">{{ link.label }}</a>
-                </li>
-            {% endfor %}
-        </ul>
+        <h1>画像生成サービス</h1>
+        <p>
+            URLを入力するだけで画像を生成してそのまま取得することが出来ます。
+            <br>
+            HTML文書のimg要素での画像表示テスト等にご利用いただけます。
+        </p>
+        <h2>使い方</h2>
+        <p>
+            以下の「プロファイルタイプ一覧」からプロファイルタイプを選択し、
+            <br>
+            画像生成用のURL生成ツールをご利用ください。
+            <br>
+            <br>
+            生成されたURLの各クエリパラメータの値を直接変更してプロファイルをカスタマイズすることも可能です。
+        </p>
+        <div>
+            <h2>プロファイルタイプ一覧</h2>
+            <ul>
+                {% for link in form_links %}
+                    <li>
+                        <a href="{{ link.url }}">{{ link.label }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
         {% block content %}
         {% endblock content %}
     </body>
