@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views.generic import FormView, TemplateView
 
-from api.services import ImageProcessingService
+from api.services import ImageProcessingService, ImageProfileForm
 
 
 # Create your views here.
@@ -50,7 +50,7 @@ class ProfileFormView(FormView):
         ]
         return context
 
-    def form_valid(self, form):
+    def form_valid(self, form: ImageProfileForm):
         query_string = form.get_query_string()
         result_image_url = self.request.build_absolute_uri(
             f"{reverse('api:get')}?{query_string}"
