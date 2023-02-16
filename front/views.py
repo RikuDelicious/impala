@@ -52,7 +52,9 @@ class ProfileFormView(FormView):
 
     def form_valid(self, form):
         query_string = form.get_query_string()
-        result_image_url = f"{reverse('api:get')}?{query_string}"
+        result_image_url = self.request.build_absolute_uri(
+            f"{reverse('api:get')}?{query_string}"
+        )
 
         context = self.get_context_data()
         context["result_image_url"] = result_image_url
