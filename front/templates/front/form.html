@@ -11,9 +11,10 @@
                 {% csrf_token %}
                 {% for field in form %}
                     <div class="form_common_field">
-                        <div>{{ field.label_tag }}</div>
+                        <div class="font-bold">{{ field.label_tag }}</div>
                         <div>{{ field }}</div>
                         <div class="text-red-600 font-bold">{{ field.errors }}</div>
+                        <div class="text-sm">{{ field.help_text }}</div>
                     </div>
                 {% endfor %}
                 <input type="submit" value="画像URLを生成" class="rounded bg-[#2da44e] px-4 py-2">

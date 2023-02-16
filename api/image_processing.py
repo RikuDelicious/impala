@@ -254,21 +254,27 @@ class JPEGPlainProfileForm(ImageProfileForm):
 
     width = forms.IntegerField(
         required=True,
+        initial=512,
         min_value=JPEGPlainProfile.min_size,
         max_value=JPEGPlainProfile.max_size,
+        help_text=f"画像の横サイズ（{JPEGPlainProfile.min_size} ~ {JPEGPlainProfile.max_size} px）",
     )
     height = forms.IntegerField(
         required=True,
+        initial=512,
         min_value=JPEGPlainProfile.min_size,
         max_value=JPEGPlainProfile.max_size,
+        help_text=f"画像の縦サイズ（{JPEGPlainProfile.min_size} ~ {JPEGPlainProfile.max_size} px）",
     )
     color_rgb = HexRGBColorCodeField(
-        required=True,
+        required=True, initial="000000", help_text="6桁または3桁のカラーコード（例：537FE7, fff）"
     )
     quality = forms.IntegerField(
         required=True,
+        initial=75,
         min_value=JPEGPlainProfile.min_quality,
         max_value=JPEGPlainProfile.max_quality,
+        help_text=f"画像のクオリティ（{JPEGPlainProfile.min_quality} ~ {JPEGPlainProfile.max_quality}）",
     )
 
     def get_profile(self) -> ImageProfileAbstract:
@@ -300,21 +306,27 @@ class PNGPlainProfileForm(ImageProfileForm):
 
     width = forms.IntegerField(
         required=True,
+        initial=512,
         min_value=PNGPlainProfile.min_size,
         max_value=PNGPlainProfile.max_size,
+        help_text=f"画像の横サイズ（{PNGPlainProfile.min_size} ~ {PNGPlainProfile.max_size} px）",
     )
     height = forms.IntegerField(
         required=True,
+        initial=512,
         min_value=PNGPlainProfile.min_size,
         max_value=PNGPlainProfile.max_size,
+        help_text=f"画像の縦サイズ（{PNGPlainProfile.min_size} ~ {PNGPlainProfile.max_size} px）",
     )
     color_rgb = HexRGBColorCodeField(
-        required=True,
+        required=True, initial="000000", help_text="6桁または3桁のカラーコード（例：537FE7, fff）"
     )
     alpha = forms.IntegerField(
         required=True,
+        initial=255,
         min_value=PNGPlainProfile.min_alpha,
         max_value=PNGPlainProfile.max_alpha,
+        help_text=f"画像のアルファ値（{PNGPlainProfile.min_alpha} ~ {PNGPlainProfile.max_alpha}）",
     )
 
     def get_profile(self) -> ImageProfileAbstract:
