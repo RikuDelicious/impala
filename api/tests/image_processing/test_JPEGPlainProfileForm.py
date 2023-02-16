@@ -200,3 +200,17 @@ def test_field_improper_values():
     }
     assert not form_improper_quality.is_valid()
     assert form_improper_quality.errors == {"quality": ["Enter a whole number."]}
+
+
+def test_get_query_string_valid(querydict_all_proper):
+    form = JPEGPlainProfileForm(querydict_all_proper)
+    assert (
+        form.get_query_string()
+        == "profile_type=jpeg_plain&width=512&height=256&color_rgb=85CDFD&quality=50"
+    )
+
+
+def test_get_query_string_invalid(querydict_improper):
+    form = JPEGPlainProfileForm(querydict_improper)
+    with pytest.raises(QueryError):
+        form.get_query_string()
