@@ -228,6 +228,7 @@ class HexRGBColorCodeField(forms.CharField):
 
     def clean(self, value):
         cleaned_data = super().clean(value)
+        self.original_cleaned_data = cleaned_data
         rgb_tuple = parse_hex_RGB_color_code(cleaned_data)
         return ColorRGB(r=rgb_tuple[0], g=rgb_tuple[1], b=rgb_tuple[2])
 
@@ -242,6 +243,9 @@ class ImageProfileForm(forms.Form):
 
     @classmethod
     def get_profile_type(cls) -> str:
+        raise NotImplementedError()
+
+    def get_query_string(self) -> str:
         raise NotImplementedError()
 
 
@@ -277,6 +281,19 @@ class JPEGPlainProfileForm(ImageProfileForm):
     def get_profile_type(cls) -> str:
         return "jpeg_plain"
 
+    def get_query_string(self) -> str:
+        if self.is_valid():
+            cleaned_data = self.cleaned_data.copy()
+            cleaned_data["color_rgb"] = self.fields["color_rgb"].original_cleaned_data
+
+            parameters = [f"profile_type={self.get_profile_type()}"] + [
+                f"{key}={value}" for key, value in cleaned_data.items()
+            ]
+            query_string = "&".join(parameters)
+            return query_string
+        else:
+            raise QueryError(dict(self.errors))
+
 
 class PNGPlainProfileForm(ImageProfileForm):
     profile_class = PNGPlainProfile
@@ -309,3 +326,16 @@ class PNGPlainProfileForm(ImageProfileForm):
     @classmethod
     def get_profile_type(cls) -> str:
         return "png_plain"
+
+    def get_query_string(self) -> str:
+        if self.is_valid():
+            cleaned_data = self.cleaned_data.copy()
+            cleaned_data["color_rgb"] = self.fields["color_rgb"].original_cleaned_data
+
+            parameters = [f"profile_type={self.get_profile_type()}"] + [
+                f"{key}={value}" for key, value in cleaned_data.items()
+            ]
+            query_string = "&".join(parameters)
+            return query_string
+        else:
+            raise QueryError(dict(self.errors))
