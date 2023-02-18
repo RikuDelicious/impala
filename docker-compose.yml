@@ -36,6 +36,9 @@ services:
   cache:
     container_name: "impala_cache"
     image: memcached
+    entrypoint:
+      - memcached
+      - -m 128
   web:
     container_name: "impala_web"
     build: .
@@ -49,6 +52,7 @@ services:
       - POSTGRES_DB_NAME=postgres
       - POSTGRES_USERNAME=postgres
       - POSTGRES_PASSWORD=postgres
+      - MEMCACHED_LOCATION=cache:11211
       # コンテナ内におけるlocalstack(awsのモック)の認証情報
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test

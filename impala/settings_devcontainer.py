@@ -19,3 +19,11 @@ DATABASES = {
         "PORT": os.environ["POSTGRES_PORT"],
     }
 }
+
+# Cache
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.memcached.PyLibMCCache",
+        "LOCATION": os.environ["MEMCACHED_LOCATION"],
+    }
+}
