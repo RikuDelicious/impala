@@ -7,3 +7,6 @@ djlint
 
 # packages for testing
 pytest-django
+
+# packages for localstack
+awscli-local
