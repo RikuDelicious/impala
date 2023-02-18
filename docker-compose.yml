@@ -5,6 +5,9 @@ services:
     container_name: "impala_localstack_main"
     image: localstack/localstack
     ports:
+      # ホストマシンからlocalstackのコンテナと通信するためのポート設定
+      # ホストマシンからlocalstackのS3バケットのオブジェクトへアクセスするために必要
+      # ホストマシンからはhttps://localhost.localstack.cloud:4566/<bucket name>/<key>でアクセス可能になる
       - "127.0.0.1:4566:4566"            # LocalStack Gateway
       - "127.0.0.1:4510-4559:4510-4559"  # external services port range
     environment:
@@ -14,3 +17,47 @@ services:
     volumes:
       - "${LOCALSTACK_VOLUME_DIR:-./localstack-volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      default:
+        aliases:
+          # 他のコンテナからlocalstackのコンテナと通信するための設定
+          # これにより、例えばdjanto-storagesの設定でlocalstackのS3へのエンドポイントを以下のように設定可能
+          # AWS_S3_ENDPOINT_URL = "https://localhost.localstack.cloud:4566"
+          - localhost.localstack.cloud
+  db:
+    container_name: "impala_db"
+    image: postgres
+    volumes:
+      - data_db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  cache:
+    container_name: "impala_cache"
+    image: memcached
+  web:
+    container_name: "impala_web"
+    build: .
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    environment:
+      - POSTGRES_HOSTNAME=db
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB_NAME=postgres
+      - POSTGRES_USERNAME=postgres
+      - POSTGRES_PASSWORD=postgres
+      # コンテナ内におけるlocalstack(awsのモック)の認証情報
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_DEFAULT_REGION=ap-northeast-1
+      # awslocalが利用するlocalstackのホスト名
+      - LOCALSTACK_HOST=localstack
+    depends_on:
+      - localstack
+      - db
+      - cache
+volumes:
+  data_db:
