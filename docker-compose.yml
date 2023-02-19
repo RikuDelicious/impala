@@ -15,6 +15,7 @@ services:
       - LAMBDA_EXECUTOR=${LAMBDA_EXECUTOR-}
       - DOCKER_HOST=unix:///var/run/docker.sock
     volumes:
+      - "./localstack-hooks/ready.d:/etc/localstack/init/ready.d"  # ready hooks
       - "${LOCALSTACK_VOLUME_DIR:-./localstack-volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
     networks:
@@ -36,17 +37,22 @@ services:
   cache:
     container_name: "impala_cache"
     image: memcached
-    entrypoint:
-      - memcached
-      - -m 128
+    # memcachedの元々のCMDは"memcached"
+    # https://github.com/docker-library/memcached/blob/master/debian/Dockerfile
+    command: memcached -m 128
   web:
     container_name: "impala_web"
     build: .
     volumes:
       - .:/code
+    entrypoint: /bin/bash
+    command: ./docker-web-command.sh
     ports:
       - "8000:8000"
     environment:
+      - DJANGO_SUPERUSER_USERNAME=admin
+      - DJANGO_SUPERUSER_PASSWORD=admin
+      - DJANGO_SUPERUSER_EMAIL=admin@example.com
       - POSTGRES_HOSTNAME=db
       - POSTGRES_PORT=5432
       - POSTGRES_DB_NAME=postgres
