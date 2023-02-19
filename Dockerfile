@@ -8,6 +8,7 @@ RUN pip install -r requirements.txt
 RUN pip install -r requirements_dev.txt
 
 # Create the user
+# devcontainer内でgitリポジトリを管理するために必要
 ARG USERNAME=vscode
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
