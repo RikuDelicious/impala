@@ -25,8 +25,17 @@ timeout 60s bash -c check_ready_completed
 if [ $? -eq 0 ]; then
     echo "### pytest --ds=impala.settings.devcontainer"
     pytest --ds=impala.settings.devcontainer
+    if [ $? -eq 0 ]; then
+        echo "### All tests were collected and passed successfully"
+        echo "@end docker-web-run-test.sh"
+        exit 0
+    else
+        echo "### [ERROR] pytest failed."
+        echo "@end docker-web-run-test.sh"
+        exit 1
+    fi
 else
     echo "### [ERROR] localstack health check timed out and test was not run."
+    echo "@end docker-web-run-test.sh"
+    exit 1
 fi
-
-echo "@end docker-web-run-test.sh"
