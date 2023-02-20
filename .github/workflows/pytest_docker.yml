@@ -6,15 +6,31 @@ on:
   pull_request:
     branches: [ "development" ]
 
+env:
+  DOCKERFILE_IMAGE_CACHE_PATH: dockerfile-image
+
 jobs:
   run-tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Build docker images
+      - name: Cache Dockerfile image
+        id: cache-dockerfile-image
+        uses: action/cache@v2
+        with:
+          path: ${{ env.DOCKERFILE_IMAGE_CACHE_PATH }}
+          key: ${{ runner.os }}-${{ hashFiles('./Dockerfile') }}
+      - name: Build Dockerfile image
+        if: steps.cache-dockerfile-image.outputs.cache-hit != 'true'
+        run: |
+          docker build --tag impala-web-dockerfile:local .
+          docker save impala-web-dockerfile:local -o ${DOCKERFILE_IMAGE_CACHE_PATH}
+      - name: Load Dockerfile image
+        run: docker load -i ${DOCKERFILE_IMAGE_CACHE_PATH}
+      - name: Build docker compose images
         run: |
           docker compose -f ./docker-compose.yml -f ./docker-compose-ci.yml build
-      - name: Run docker containers and tests
+      - name: Run docker compose containers and tests
         run: |
           docker compose -f ./docker-compose.yml -f ./docker-compose-ci.yml up --abort-on-container-exit
