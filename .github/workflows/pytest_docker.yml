@@ -20,7 +20,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ env.DOCKERFILE_IMAGE_CACHE_PATH }}
-          key: ${{ runner.os }}-${{ hashFiles('./Dockerfile') }}
+          key: ${{ runner.os }}-dockerfile-image-${{ hashFiles('./Dockerfile') }}
       - name: Build Dockerfile image
         if: steps.cache-dockerfile-image.outputs.cache-hit != 'true'
         run: |
