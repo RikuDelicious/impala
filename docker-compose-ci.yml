@@ -1,4 +1,6 @@
 version: '3.8'
 services:
   web:
+    image: impala-web-dockerfile:local
+    build: .
     command: ./docker-web-run-test.sh
