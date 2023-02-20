@@ -104,7 +104,7 @@ def test_get_cache_image_url_not_exists(existing_images):
         assert result is None
 
 
-def test_upload_image(settings, temp_image_path):
+def test_upload_image(image_url_prefix, temp_image_path):
     with patch.object(
         ImageProfileStub,
         "upload_file_name",
@@ -116,9 +116,5 @@ def test_upload_image(settings, temp_image_path):
         ):
             result = ImageModelService.upload_image(temp_image_path, profile)
 
-    expected_url = os.path.join(
-        settings.MEDIA_URL,
-        "images/",
-        "upload_image_file_name.jpeg",
-    )
+    expected_url = image_url_prefix + "upload_image_file_name.jpeg"
     assert result == expected_url
