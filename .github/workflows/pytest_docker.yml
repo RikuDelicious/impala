@@ -7,6 +7,7 @@ on:
     branches: [ "development" ]
 
 env:
+  DOCKERFILE_IMAGE_TAG: impala-web-dockerfile:local
   DOCKERFILE_IMAGE_CACHE_PATH: dockerfile-image
 
 jobs:
@@ -24,8 +25,8 @@ jobs:
       - name: Build Dockerfile image
         if: steps.cache-dockerfile-image.outputs.cache-hit != 'true'
         run: |
-          docker build --tag impala-web-dockerfile:local .
-          docker save impala-web-dockerfile:local -o ${DOCKERFILE_IMAGE_CACHE_PATH}
+          docker build --tag ${DOCKERFILE_IMAGE_TAG} .
+          docker save ${DOCKERFILE_IMAGE_TAG} -o ${DOCKERFILE_IMAGE_CACHE_PATH}
       - name: Load Dockerfile image
         run: docker load -i ${DOCKERFILE_IMAGE_CACHE_PATH}
       - name: Build docker compose images
