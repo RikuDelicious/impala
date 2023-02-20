@@ -1,6 +1,12 @@
 import os
 
-from .settings import *
+from .core import *
+
+SECRET_KEY = "django-insecure-i3*kt5pcp^s0d1f--ql3@wk4_y$tdtbohof3kdv=kymzt!-yg="
+
+DEBUG = True
+
+ALLOWED_HOSTS = []
 
 # Amazon S3 File Storage
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
