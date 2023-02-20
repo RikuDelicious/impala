@@ -43,11 +43,9 @@ def view_url() -> str:
         },
     ]
 )
-def valid_request_data(request, settings):
+def valid_request_data(image_url_prefix, request):
     data = request.param.copy()
-    data["expected_image_url"] = os.path.join(
-        settings.MEDIA_URL, "images/", data["profile"].upload_file_name
-    )
+    data["expected_image_url"] = image_url_prefix + data["profile"].upload_file_name
     return data
 
 

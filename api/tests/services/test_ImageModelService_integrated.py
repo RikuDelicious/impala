@@ -46,7 +46,7 @@ def sample_profile(request):
 ########################################################################################
 
 
-def test_get_cache_image_url_exists(settings, sample_profile: ImageProfileAbstract):
+def test_get_cache_image_url_exists(image_url_prefix, sample_profile: ImageProfileAbstract):
     with TemporaryDirectory() as temp_dir:
         pil_image = sample_profile.create_pil_image()
         temp_image_path = os.path.join(
@@ -56,11 +56,7 @@ def test_get_cache_image_url_exists(settings, sample_profile: ImageProfileAbstra
 
         ImageModelService.upload_image(temp_image_path, sample_profile)
 
-    expected_url = os.path.join(
-        settings.MEDIA_URL,
-        "images/",
-        sample_profile.upload_file_name,
-    )
+    expected_url = image_url_prefix + sample_profile.upload_file_name
 
     result = ImageModelService.get_cache_image_url(profile=sample_profile)
 
@@ -72,7 +68,7 @@ def test_get_cache_image_url_not_exists(sample_profile: ImageProfileAbstract):
     assert result is None
 
 
-def test_upload_image(settings, sample_profile: ImageProfileAbstract):
+def test_upload_image(image_url_prefix, settings, sample_profile: ImageProfileAbstract):
     with TemporaryDirectory() as temp_dir:
         pil_image = sample_profile.create_pil_image()
         temp_image_path = os.path.join(
@@ -82,9 +78,5 @@ def test_upload_image(settings, sample_profile: ImageProfileAbstract):
 
         result = ImageModelService.upload_image(temp_image_path, sample_profile)
 
-    expected_url = os.path.join(
-        settings.MEDIA_URL,
-        "images/",
-        sample_profile.upload_file_name,
-    )
+    expected_url = image_url_prefix + sample_profile.upload_file_name
     assert result == expected_url
