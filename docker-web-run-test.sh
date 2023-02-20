@@ -12,8 +12,8 @@ function check_ready_completed () {
     while true
     do
         result=`curl -s localstack:4566/_localstack/init/ready | jq ".completed"`
-        echo $result
-        if [ $result = "true" ]; then
+        echo "health check result(localstack:4566/_localstack/init/ready completed): ${result}"
+        if [ "${result}" = "true" ]; then
             break
         fi
         sleep 0.5
