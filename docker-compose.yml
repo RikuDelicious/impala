@@ -39,7 +39,7 @@ services:
     image: memcached
     # memcachedの元々のCMDは"memcached"
     # https://github.com/docker-library/memcached/blob/master/debian/Dockerfile
-    command: memcached -m 128
+    command: memcached -m 128 -vv
   web:
     container_name: "impala_web"
     build: .
