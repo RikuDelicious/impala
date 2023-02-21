@@ -2,7 +2,7 @@ import json
 from tempfile import TemporaryDirectory
 from typing import Type
 
-from django.http import HttpRequest, HttpResponseBadRequest
+from django.http import HttpRequest, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import redirect
 from django.views.generic.base import View
 
@@ -14,8 +14,15 @@ from .services import (
     ImageProcessingServiceAbstract,
 )
 
+from django_ratelimit.decorators import ratelimit
+from django.utils.decorators import method_decorator
+
 
 # Create your views here.
+def ratelimited_error(request, exception):
+    return JsonResponse({'error': 'ratelimited'}, status=429)
+
+
 class GetView(View):
     http_method_names = ["get"]
     image_processing_service: Type[
@@ -23,6 +30,8 @@ class GetView(View):
     ] = ImageProcessingService
     image_model_service: Type[ImageModelServiceAbstract] = ImageModelService
 
+    @method_decorator(ratelimit(key="header:x-real-ip", rate="50/s", method='GET'))
+    @method_decorator(ratelimit(key="header:x-real-ip", rate="500/m", method='GET'))
     def get(self, request: HttpRequest):
         try:
             profile = self.image_processing_service.create_profile(request.GET)
