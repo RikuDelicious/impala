@@ -49,7 +49,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django_ratelimit.middleware.RatelimitMiddleware",
 ]
 
 ROOT_URLCONF = "impala.urls"
@@ -119,9 +118,3 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-# Django Ratelimit
-# https://github.com/jsocol/django-ratelimit
-RATELIMIT_ENABLE = True
-RATELIMIT_VIEW = "api.views.ratelimited_error"
-RATELIMIT_IP_META_KEY = "HTTP_X_REAL_IP"  # HTTPヘッダーはX-Real-Ip
