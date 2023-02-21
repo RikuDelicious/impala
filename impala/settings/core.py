@@ -123,3 +123,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Django Ratelimit
 # https://github.com/jsocol/django-ratelimit
 RATELIMIT_VIEW = "api.views.ratelimited_error"
+RATELIMIT_IP_META_KEY = "X_Real_IP"

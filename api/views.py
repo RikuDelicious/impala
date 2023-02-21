@@ -30,8 +30,8 @@ class GetView(View):
     ] = ImageProcessingService
     image_model_service: Type[ImageModelServiceAbstract] = ImageModelService
 
-    @method_decorator(ratelimit(key="header:x-real-ip", rate="50/s", method='GET'))
-    @method_decorator(ratelimit(key="header:x-real-ip", rate="500/m", method='GET'))
+    @method_decorator(ratelimit(key="ip", rate="50/s", method='GET'))
+    @method_decorator(ratelimit(key="ip", rate="500/m", method='GET'))
     def get(self, request: HttpRequest):
         try:
             profile = self.image_processing_service.create_profile(request.GET)
