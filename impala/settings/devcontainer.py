@@ -10,6 +10,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+MIDDLEWARE += [
+    "django_ratelimit.middleware.RatelimitMiddleware",
+]
+
 # Amazon S3 File Storage
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 AWS_STORAGE_BUCKET_NAME = "impala-localstack-public-bucket"  # localstack
@@ -35,3 +39,9 @@ CACHES = {
         "LOCATION": os.environ["MEMCACHED_LOCATION"],
     }
 }
+
+# Django Ratelimit
+# https://github.com/jsocol/django-ratelimit
+RATELIMIT_ENABLE = True
+RATELIMIT_VIEW = "api.views.ratelimited_error"
+RATELIMIT_IP_META_KEY = "HTTP_X_REAL_IP"  # HTTPヘッダーはX-Real-Ip
