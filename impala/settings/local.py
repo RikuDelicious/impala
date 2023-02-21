@@ -17,3 +17,7 @@ DATABASES = {
 
 MEDIA_ROOT = BASE_DIR / "media/"
 MEDIA_URL = "media/"
+
+# Django Ratelimit
+# https://github.com/jsocol/django-ratelimit
+RATELIMIT_ENABLE = False
