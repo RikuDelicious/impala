@@ -6,6 +6,7 @@ from unittest.mock import patch
 
 import PIL.Image
 import pytest
+from django.conf import settings
 from django.core.cache import cache
 from django.test import Client
 from django.urls import reverse
@@ -16,6 +17,9 @@ from api.image_processing import ImageProfileAbstract
 # 192.0.2.0/24 (TEST-NET-1)
 # 198.51.100.0/24 (TEST-NET-2)
 # 203.0.113.0/24 (TEST-NET-3)
+
+if settings.SETTINGS_MODULE_NAME == "impala.settings.local":
+    pytest.skip("skipping ratelimit tests", allow_module_level=True)
 
 # Stubs
 ########################################################################################
