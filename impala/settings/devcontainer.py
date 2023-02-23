@@ -11,7 +11,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 MIDDLEWARE += [
-    "impala.middlewares.add_x_real_ip",
+    "impala.middlewares.add_x_real_ip",  # 開発環境用
     "django_ratelimit.middleware.RatelimitMiddleware",
 ]
 
