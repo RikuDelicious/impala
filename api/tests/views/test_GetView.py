@@ -8,7 +8,6 @@ import pytest
 from django.urls import reverse
 
 from api.image_processing import ImageProfileAbstract, QueryError
-from api.views import GetView
 
 # Stubs
 ########################################################################################
@@ -54,7 +53,7 @@ def patch_services():
 ########################################################################################
 
 
-def test_cache_exists(rf, view_url: str, patch_services: dict):
+def test_cache_exists(client, view_url: str, patch_services: dict):
     patch_services["image_processing"].create_profile.return_value = ImageProfileStub()
     patch_services["image_processing"].create_image.return_value = "/path/to/image.jpeg"
     patch_services[
@@ -64,8 +63,7 @@ def test_cache_exists(rf, view_url: str, patch_services: dict):
         "image_model"
     ].upload_image.return_value = "http://example.com/uploaded.jpeg"
 
-    req = rf.get(view_url)
-    res = GetView.as_view()(req)
+    res = client.get(view_url)
 
     patch_services["image_processing"].create_profile.assert_called()
     patch_services["image_processing"].create_image.assert_not_called()
@@ -76,7 +74,7 @@ def test_cache_exists(rf, view_url: str, patch_services: dict):
     assert res.url == "http://example.com/cache.jpeg"
 
 
-def test_cache_None(rf, view_url: str, patch_services: dict):
+def test_cache_None(client, view_url: str, patch_services: dict):
     patch_services["image_processing"].create_profile.return_value = ImageProfileStub()
     patch_services["image_processing"].create_image.return_value = "/path/to/image.jpeg"
     patch_services["image_model"].get_cache_image_url.return_value = None
@@ -84,8 +82,7 @@ def test_cache_None(rf, view_url: str, patch_services: dict):
         "image_model"
     ].upload_image.return_value = "http://example.com/uploaded.jpeg"
 
-    req = rf.get(view_url)
-    res = GetView.as_view()(req)
+    res = client.get(view_url)
 
     patch_services["image_processing"].create_profile.assert_called()
     patch_services["image_processing"].create_image.assert_called()
@@ -96,7 +93,7 @@ def test_cache_None(rf, view_url: str, patch_services: dict):
     assert res.url == "http://example.com/uploaded.jpeg"
 
 
-def test_create_profile_QueryError(rf, view_url: str, patch_services: dict):
+def test_create_profile_QueryError(client, view_url: str, patch_services: dict):
     patch_services["image_processing"].create_profile.return_value = ImageProfileStub()
     patch_services["image_processing"].create_image.return_value = "/path/to/image.jpeg"
     patch_services[
@@ -110,8 +107,7 @@ def test_create_profile_QueryError(rf, view_url: str, patch_services: dict):
     query_error = QueryError(error_messages)
     patch_services["image_processing"].create_profile.side_effect = query_error
 
-    req = rf.get(view_url)
-    res = GetView.as_view()(req)
+    res = client.get(view_url)
 
     patch_services["image_processing"].create_profile.assert_called()
     patch_services["image_processing"].create_image.assert_not_called()
@@ -122,7 +118,7 @@ def test_create_profile_QueryError(rf, view_url: str, patch_services: dict):
     assert res.content == json.dumps(error_messages).encode("utf-8")
 
 
-def test_create_profile_other_Exception(rf, view_url: str, patch_services: dict):
+def test_create_profile_other_Exception(client, view_url: str, patch_services: dict):
     patch_services["image_processing"].create_profile.return_value = ImageProfileStub()
     patch_services["image_processing"].create_profile.side_effect = Exception
     patch_services["image_processing"].create_image.return_value = "/path/to/image.jpeg"
@@ -134,5 +130,4 @@ def test_create_profile_other_Exception(rf, view_url: str, patch_services: dict)
     ].upload_image.return_value = "http://example.com/uploaded.jpeg"
 
     with pytest.raises(Exception):
-        req = rf.get(view_url)
-        GetView.as_view()(req)
+        client.get(view_url)
