@@ -5,7 +5,7 @@
   "main": "index.js",
   "directories": {},
   "scripts": {
-    "dev": "postcss ./tailwind-input.css -o ./static/front/dist/style.css --watch"
+    "dev": "postcss ./tailwind-input.css -o ./static/front/style.css --watch"
   },
   "keywords": [],
   "author": "",
