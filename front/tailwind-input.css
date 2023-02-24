@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.form_common {
+    input[type='text'], input[type='number'] {
+        @apply rounded-md;
+    }
+
+    .form_common_field {
+        @apply mb-2;
+    }
+}

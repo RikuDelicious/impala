@@ -1,0 +1,12 @@
+# packages for code formatting
+flake8
+black
+isort
+mypy
+djlint
+
+# packages for testing
+pytest-django
+
+# packages for localstack
+awscli-local

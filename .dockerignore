@@ -1,0 +1,8 @@
+*
+!api
+!front
+!impala
+!manage.py
+!requirements.txt
+!requirements_dev.txt
+**/__pycache__

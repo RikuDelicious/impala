@@ -1,0 +1,39 @@
+{% extends 'front/base.html' %}
+{% block content %}
+    {% if form %}
+        <div class="mb-4">
+            <div class="mb-2">
+                <h2 class="text-2xl mb-1">画像生成用のURL生成ツール</h2>
+                <hr>
+            </div>
+            <div class="mb-2">プロファイルタイプ: {{ form.get_profile_type }}</div>
+            <form action="#" method="post" class="form_common">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form_common_field">
+                        <div class="font-bold">{{ field.label_tag }}</div>
+                        <div>{{ field }}</div>
+                        <div class="text-red-600 font-bold">{{ field.errors }}</div>
+                        <div class="text-sm">{{ field.help_text }}</div>
+                    </div>
+                {% endfor %}
+                <input type="submit" value="画像URLを生成" class="rounded bg-[#2da44e] px-4 py-2">
+            </form>
+        </div>
+    {% endif %}
+    {% if result_image_url %}
+        <div>
+            <div class="mb-2">
+                <h3 class="text-xl mb-1">画像URL</h3>
+                <a href="{{ result_image_url }}"
+                   class="text-[#1a0dab] hover:underline underline-offset-1">{{ result_image_url }}</a>
+            </div>
+            <div>
+                <h3 class="text-xl mb-1">Preview</h3>
+                <div>
+                    <img src="{{ result_image_url }}" alt="preview">
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock content %}
