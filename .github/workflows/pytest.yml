@@ -23,4 +23,5 @@ jobs:
           pip install pytest-django
       - name: Run Tests
         run: |
-          pytest
+          cd ./django-project
+          pytest --ds=impala.settings.local
