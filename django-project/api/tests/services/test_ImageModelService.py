@@ -6,35 +6,10 @@ from unittest.mock import PropertyMock, patch
 
 import PIL.Image
 import pytest
-from django.core.files import File
-
-from api.image_processing import ImageProfileAbstract
 from api.models import Image
 from api.services import ImageModelService
-
-# Stubs
-########################################################################################
-
-
-class ImageProfileStub(ImageProfileAbstract):
-    def create_pil_image(self) -> PIL.Image.Image:
-        raise NotImplementedError()
-
-    @property
-    def quality(self) -> int | None:
-        raise NotImplementedError()
-
-    @property
-    def upload_file_name(self) -> str:
-        raise NotImplementedError()
-
-    @classmethod
-    def get_extension(cls) -> str:
-        raise NotImplementedError()
-
-    def dump_signiture(self) -> str:
-        raise NotImplementedError()
-
+from api.tests.stubs import ImageProfileStub
+from django.core.files import File
 
 # Fixtures
 ########################################################################################
@@ -89,7 +64,10 @@ def existing_images(temp_dir):
 def test_get_cache_image_url_exists(existing_images):
     profile = ImageProfileStub()
     with patch.object(
-        profile, "dump_signiture", return_value=existing_images[0].profile_signiture
+        profile,
+        "dump_signiture",
+        return_value=existing_images[0].profile_signiture,
+        autospec=True,
     ):
         result = ImageModelService.get_cache_image_url(profile=profile)
         assert result == existing_images[0].upload.url
@@ -98,7 +76,10 @@ def test_get_cache_image_url_exists(existing_images):
 def test_get_cache_image_url_not_exists(existing_images):
     profile = ImageProfileStub()
     with patch.object(
-        profile, "dump_signiture", return_value="new_image_profile_signiture"
+        profile,
+        "dump_signiture",
+        return_value="new_image_profile_signiture",
+        autospec=True,
     ):
         result = ImageModelService.get_cache_image_url(profile=profile)
         assert result is None
@@ -112,7 +93,10 @@ def test_upload_image(image_url_prefix, temp_image_path):
     ):
         profile = ImageProfileStub()
         with patch.object(
-            profile, "dump_signiture", return_value="image_profile_signiture"
+            profile,
+            "dump_signiture",
+            return_value="image_profile_signiture",
+            autospec=True,
         ):
             result = ImageModelService.upload_image(temp_image_path, profile)
 
