@@ -67,18 +67,16 @@ class ImageProcessingService(ImageProcessingServiceAbstract):
 
     @classmethod
     def create_image(cls, profile: ImageProfileAbstract, base_dir: str) -> str:
-        pil_image = profile.create_pil_image()
         if os.path.isdir(base_dir):
-            tmp_image_path = os.path.join(base_dir, f"tmp.{profile.get_extension()}")
+            save_file_path = os.path.join(base_dir, f"tmp.{profile.get_extension()}")
+            if os.path.isfile(save_file_path):
+                raise FileExistsError(
+                    f"File already exists. save_file_path: {save_file_path}"
+                )
+            profile.save_image(save_file_path=save_file_path)
+            return save_file_path
         else:
             raise FileNotFoundError(f"No such directory. base_dir: {base_dir}")
-
-        if profile.quality is None:
-            pil_image.save(tmp_image_path)
-        else:
-            pil_image.save(tmp_image_path, quality=profile.quality)
-
-        return tmp_image_path
 
 
 class ImageModelServiceAbstract(ABC):
