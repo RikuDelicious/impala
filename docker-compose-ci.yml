@@ -1,4 +1,4 @@
 version: '3.8'
 services:
   web:
-    command: ./docker-web-run-test.sh
+    command: ./docker-scripts/docker-web-run-test.sh

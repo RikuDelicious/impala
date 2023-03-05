@@ -15,7 +15,7 @@ services:
       - LAMBDA_EXECUTOR=${LAMBDA_EXECUTOR-}
       - DOCKER_HOST=unix:///var/run/docker.sock
     volumes:
-      - "./localstack-hooks/ready.d:/etc/localstack/init/ready.d"  # ready hooks
+      - "./docker-scripts/localstack-hooks/ready.d:/etc/localstack/init/ready.d"  # ready hooks
       - "${LOCALSTACK_VOLUME_DIR:-./localstack-volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
     networks:
@@ -46,7 +46,7 @@ services:
     volumes:
       - .:/code
     entrypoint: /bin/bash
-    command: ./docker-web-command.sh
+    command: ./docker-scripts/docker-web-command.sh
     ports:
       - "8000:8000"
     environment:

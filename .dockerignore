@@ -1,8 +1,5 @@
 *
-!api
-!front
-!impala
-!manage.py
+!django-project
 !requirements.txt
 !requirements_dev.txt
 **/__pycache__

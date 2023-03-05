@@ -2,7 +2,7 @@
 echo "@start docker-web-run-test.sh"
 
 echo "### python manage.py migrate --settings impala.settings_devcontainer"
-python manage.py migrate --settings impala.settings.devcontainer
+python ./django-project/manage.py migrate --settings impala.settings.devcontainer
 
 echo "### sudo apt update"
 sudo apt-get update && sudo apt-get install -y curl jq
@@ -24,6 +24,7 @@ export -f check_ready_completed
 timeout 60s bash -c check_ready_completed
 if [ $? -eq 0 ]; then
     echo "### pytest --ds=impala.settings.devcontainer"
+    cd ./django-project
     pytest --ds=impala.settings.devcontainer
     if [ $? -eq 0 ]; then
         echo "### All tests were collected and passed successfully"
