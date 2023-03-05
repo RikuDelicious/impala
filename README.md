@@ -1,6 +1,6 @@
 # impala
-画像生成サービスサイト
-以下のURLにver1.0をデプロイしました。
+画像生成サービスサイト  
+以下のURLにver1.0をデプロイしました。  
 https://impala-service.watermelonman.net/
 
 # 概要
