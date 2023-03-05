@@ -1,5 +1,7 @@
 # impala
 画像生成サービスサイト
+以下のURLにver1.0をデプロイしました。
+https://impala-service.watermelonman.net/
 
 # 概要
 クエリパラメータでサイズや色を指定したURLでリクエストを送るだけで画像を生成し、そのままレスポンスとして画像を返すWebアプリケーションです。  
