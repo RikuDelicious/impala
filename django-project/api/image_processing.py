@@ -77,6 +77,10 @@ class ImageProfileAbstract(ABC):
     def create_pil_image(self) -> PIL.Image.Image:
         raise NotImplementedError()
 
+    @abstractmethod
+    def save_image(self, save_file_path: str) -> None:
+        raise NotImplementedError()
+
     @property
     @abstractmethod
     def quality(self) -> int | None:
