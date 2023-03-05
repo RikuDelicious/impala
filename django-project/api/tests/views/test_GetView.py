@@ -3,35 +3,10 @@ from __future__ import annotations
 import json
 from unittest.mock import patch
 
-import PIL.Image
 import pytest
+from api.image_processing import QueryError
+from api.tests.stubs import ImageProfileStub
 from django.urls import reverse
-
-from api.image_processing import ImageProfileAbstract, QueryError
-
-# Stubs
-########################################################################################
-
-
-class ImageProfileStub(ImageProfileAbstract):
-    def create_pil_image(self) -> PIL.Image.Image:
-        raise NotImplementedError()
-
-    @property
-    def quality(self) -> int | None:
-        raise NotImplementedError()
-
-    @property
-    def upload_file_name(self) -> str:
-        raise NotImplementedError()
-
-    @classmethod
-    def get_extension(cls) -> str:
-        raise NotImplementedError()
-
-    def dump_signiture(self) -> str:
-        raise NotImplementedError()
-
 
 # Fixtures
 ########################################################################################
