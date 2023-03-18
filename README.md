@@ -7,7 +7,7 @@ https://impala-service.watermelonman.net/
 クエリパラメータでサイズや色を指定したURLでリクエストを送るだけで画像を生成し、そのままレスポンスとして画像を返すWebアプリケーションです。  
 リクエストURLは、例えば以下のようなURLになります。
 ```
-/api/get/?format=jpeg_plain&width=512&height=512&color_rgb=3F497F&quality=75
+/api/get/?profile_type=jpeg_plain&width=512&height=512&color_rgb=3F497F&quality=75
 ```
 このURLをHTMLのimg要素のsrc属性に指定することで、画像をダウンロードすることなくそのまま表示することが出来ます。
 
