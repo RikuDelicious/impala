@@ -1,23 +1,36 @@
-# impala
-画像生成サービスサイト  
-以下のURLにver1.0をデプロイしました。  
-https://impala-service.watermelonman.net/
-
 # 概要
-クエリパラメータでサイズや色を指定したURLでリクエストを送るだけで画像を生成し、そのままレスポンスとして画像を返すWebアプリケーションです。  
-リクエストURLは、例えば以下のようなURLになります。
-```
-/api/get/?profile_type=jpeg_plain&width=512&height=512&color_rgb=3F497F&quality=75
-```
-このURLをHTMLのimg要素のsrc属性に指定することで、画像をダウンロードすることなくそのまま表示することが出来ます。
+こちらはURLのみで画像を生成して取得できるというサービスになります。
+現在、色やサイズを指定した無地のカラー画像を生成することが出来ます。
 
-主な用途としては、画像を表示するUIコンポーネント等の表示テストを行う際に、  
-即席のテスト画像として利用することを想定しています。（テスト画像作成の手間の削減を期待）
+![impala-top](https://user-images.githubusercontent.com/101910815/226098671-fafb3963-7767-498e-8926-9210750df93e.png)
+
+技術的には、クエリパラメータでサイズや色を指定したURLをサーバー側で処理して画像を生成し、
+そのままレスポンスとして画像を返す仕組みとなっています。  
+
+### 現在のデプロイ先URL
+```
+https://impala-service.watermelonman.net/
+```
+
+# 使い方
+例えば、以下のように画像のサイズや色を指定したURLにアクセスすると、
+```
+https://impala-service.watermelonman.net/api/get/?profile_type=jpeg_plain&width=512&height=128&color_rgb=146C94&quality=80
+```
+
+
+その指定に基づいて画像を自動で生成し、そのまま取得することが出来ます。
+![sample](https://user-images.githubusercontent.com/101910815/226098832-3ee46624-597f-4ed3-bd73-607411942c2b.gif)
+
+
+このようなURLをhtmlのimg要素のsrc属性に設定することで、画像を含むUIの表示テストを行うことが出来ます。
+![img-src](https://user-images.githubusercontent.com/101910815/226098851-b70785e3-c226-445a-a090-1b66d86fb610.png)
+![ui-test](https://user-images.githubusercontent.com/101910815/226098858-6c6584a4-3878-48e4-bed2-a2a91a370b4c.png)
 
 ### 画像URL生成ツール
-ユーザーに対してはフロントページとして画像URL生成ツールが表示されます。  
-画像の種類（プロファイル）を選択し、プロファイル毎のフォームを入力・送信することで  
-画像生成可能なURLがユーザーに対して表示されます。
+また、サイトトップにアクセスしたユーザーには**画像を生成するためのURLを生成するツール**が表示されます。
+こちらを利用して、使いたい画像生成用URLのベースを作成することが可能です。
+![tool-sample](https://user-images.githubusercontent.com/101910815/226098897-32cfb10a-03d9-4ff8-84d9-1bb6dcb366af.gif)
 
 # 使用技術
 - フレームワーク: Django (Python)
