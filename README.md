@@ -13,7 +13,7 @@
 # 使い方
 例えば、以下のように画像のサイズや色を指定したURLにアクセスすると、
 ```
-https://impala-service.watermelonman.net/api/get/?profile_type=jpeg_plain&width=512&height=128&color_rgb=146C94&quality=80
+/api/get/?profile_type=jpeg_plain&width=512&height=128&color_rgb=146C94&quality=80
 ```
 
 
